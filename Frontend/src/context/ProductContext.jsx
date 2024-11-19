@@ -22,7 +22,7 @@ export const ProductoProvider = ({ children }) => {
     const fetchProductos = async () => {
       console.log("Cargando productos..."); 
       try {
-        const productosObtenidos = await registrarProducto.get();
+        const productosObtenidos = await obtenerProductos();
         console.log("Productos obtenidos:", productosObtenidos);
         setProductos(
           Array.isArray(productosObtenidos) ? productosObtenidos : []

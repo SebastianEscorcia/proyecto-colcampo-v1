@@ -86,7 +86,7 @@ public class UsuarioController {
     }
 
     // Buscar por id
-    public Usuario findById(int id) { 
+    public Usuario findById(int id) {
         return usuarioServices.findById(id).orElse(null);
     }
 

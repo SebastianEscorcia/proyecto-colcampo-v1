@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useForm } from "react-hook-form";
 import { usarProductoContext } from "../context/ProductContext";
+import { AuthUsuarioContext } from "../context/AuthUsuarioContext";
 import imagenComprimida from "browser-image-compression";
 import "../Styles/formularioRegistroProducto.css";
 
 function FormularioRegistroProducto() {
   const { registroProducto } = usarProductoContext();
+  const { user, campesinoPerfil } = useContext(AuthUsuarioContext);
   const [errorMessage, setErrorMessage] = useState(null);
   const {
     register,
@@ -50,6 +52,8 @@ function FormularioRegistroProducto() {
       codigoProducto: values.CodigoProducto,
       categoria: values.Categoria,
       foto: values.Foto,
+      usuarioId: user.id, // Asociar con el usuario
+      campesinoId: campesinoPerfil ? campesinoPerfil.id : null, // Asociar con el campesino si el perfil está completo
     };
 
     const result = await registroProducto(productoData);
