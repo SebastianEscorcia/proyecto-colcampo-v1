@@ -1,12 +1,12 @@
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
 import ProductList from '../components/ProductsList'
-function HomePage() {
+function HomePage({addToCart,cart}) {
   return (
     <div className="flex flex-col min-h-screen">
-      <NavBar />
+      <NavBar cart={cart}/>
       <div className="flex-grow">
-          <ProductList/>
+          <ProductList addToCart={addToCart}/>
       </div>
       <Footer />
     </div>

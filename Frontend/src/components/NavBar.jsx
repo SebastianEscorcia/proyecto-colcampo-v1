@@ -7,7 +7,7 @@ import { usarContexto } from "../context/AuthUsuarioContext";
 import { ShoppingBasket, Search } from "lucide-react";
 
 
-function Navbar() {
+function Navbar({cart}) {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
@@ -69,7 +69,7 @@ function Navbar() {
           >
             <ShoppingBasket className="h-6 w-6" />
             <span className="absolute -top-1 -right-1 bg-green-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-              0
+              {cart.length}
             </span>
           </Link>
           {isAuthenticated   ? (

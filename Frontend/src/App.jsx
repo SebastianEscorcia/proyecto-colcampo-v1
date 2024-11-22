@@ -19,6 +19,8 @@ import { useEffect } from "react";
 import { usarContexto } from "./context/AuthUsuarioContext";
 //Logic
 import { obtenerPerfil } from "./Logic/ObtenerPerfil";
+import Carrito from "./Pages/Carrito";
+import { useCart } from "./Logic/useCart";
 
 NProgress.configure({ showSpinner: false });
 
@@ -35,6 +37,7 @@ function ProgressBar() {
 
 function App() {
   const { isAuthenticated, setUser, setisAuthenticated } = usarContexto();
+  const {addToCart,removeFromCart,increaseQuantity,decreaseQuantity,cart}=useCart()
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -49,13 +52,15 @@ function App() {
     }
   }, [isAuthenticated]);
 
+  
+
   return (
     <>
       <ProgressBar />
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<HomePage addToCart={addToCart} cart={cart}/>} />
         <Route path="/login" element={<Login/>} />
-        <Route path="/carrito" element={<h1>Carrito</h1>} />
+        <Route path="/carrito" element={<Carrito removeFromCart={removeFromCart} cart={cart} increaseQuantity={increaseQuantity} decreaseQuantity={decreaseQuantity}/>} />
         <Route path="/registro" element={<Registro />} />
         <Route path="/productos" element={<Productos/>} />
         <Route path="/ofertas" element={<h1>Ofertas</h1>} />
