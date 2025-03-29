@@ -7,7 +7,11 @@ export const registrarCampesino = async (datos) => {
     );
     return response.data;
   } catch (error) {
-    console.log("Error:", error);
+    console.error(
+      "Error al registrar/actualizar campesino:",
+      error.response?.data || error.message
+    );
+
     throw error;
   }
 };
@@ -25,7 +29,9 @@ export const actualizarCampesino = async (datos) => {
 };
 export const obtenerPerfilCampesino = async (id) => {
   try {
-    const response = await axios.get(`http://localhost:8080/campesinos/perfil/${id}`);
+    const response = await axios.get(
+      `http://localhost:8080/campesinos/perfil/${id}`
+    );
     return response.data;
   } catch (error) {
     console.error("Error al obtener el perfil del campesino:", error);

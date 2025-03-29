@@ -23,18 +23,15 @@ public class CampesinoServices {
 
     @Transactional
     public Campesino save(Campesino campesino) {
-        Optional<Usuario> usuarioExistenteOpt = usuarioRepo
-                .findByCorreoElectronico(campesino.getUsuario().getCorreoElectronico());
-        Usuario usuarioExistente;
-        if (usuarioExistenteOpt.isPresent()) {
-            usuarioExistente = usuarioExistenteOpt.get();
-            campesino.setUsuario(usuarioExistente);
-        } else {
-            Usuario nuevoUsuario = campesino.getUsuario();
-            nuevoUsuario.setTipoUsuario("campesino");
-            usuarioRepo.save(nuevoUsuario);
-            campesino.setUsuario(nuevoUsuario);
+        Usuario usuario = usuarioRepo.findById(campesino.getUsuario().getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+
+        Optional<Campesino> existente = repo.findByUsuarioId(usuario.getId());
+        if (existente.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Ya existe un perfil para este usuario");
         }
+
+        campesino.setUsuario(usuario);
         return repo.save(campesino);
     }
 
@@ -84,7 +81,6 @@ public class CampesinoServices {
         }
         return repo.save(existingCampesino);
     }
-
 
     public Optional<Campesino> findById(int id) {
         return Optional.ofNullable(repo.findById(id).orElse(null));

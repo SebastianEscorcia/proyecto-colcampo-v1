@@ -17,25 +17,23 @@ export function Perfil() {
     setValue,
   } = useForm();
 
-  const { user } = usarContexto();
+  const { user, campesinoPerfil } = usarContexto();
   const navigate = useNavigate();
   const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     if (user) {
-      // Establecer los datos del user
-      setValue("id", user.id);
       setValue("nombreUsuario", user.nombreUsuario);
       setValue("correoElectronico", user.correoElectronico);
       setValue("contrasenia", user.contrasenia);
       setValue("tipoUsuario", user.tipoUsuario);
       setValue("terminosYCondiciones", user.terminosYCondiciones);
 
-      // Obtener datos del perfil del campesino si existe
       obtenerPerfilCampesino(user.id)
         .then((response) => {
-          if (response) {
+          if (response && response.id) {
             setIsUpdating(true);
+            setValue("campesinoId", response.id);
             setValue("nombre", response.nombre);
             setValue("apellido", response.apellido);
             setValue("direccion", response.direccion);
@@ -49,30 +47,31 @@ export function Perfil() {
   }, [user, setValue]);
 
   const onSubmit = async (data) => {
-    if (data.foto[0]) {
+    if (data.foto && data.foto[0]) {
       data.foto = await convertirABase64(data.foto[0]);
     } else {
-      data.foto = user.foto;
+      data.foto = campesinoPerfil?.foto || "";
     }
-    data.tipoUsuario = "campesino";
 
-    const usuario = {
-      id: data.id,
-      nombreUsuario: data.nombreUsuario,
-      correoElectronico: data.correoElectronico,
-      contrasenia: data.contrasenia,
-      tipoUsuario: data.tipoUsuario,
-      terminosYCondiciones: data.terminosYCondiciones,
-    };
     const perfilCampesino = {
-      id: data.id,
       nombre: data.nombre,
       apellido: data.apellido,
       direccion: data.direccion,
       numeroDocumento: data.numeroDocumento,
       foto: data.foto,
-      usuario: usuario,
+      usuario: {
+        id: user.id,
+        nombreUsuario: user.nombreUsuario,
+        correoElectronico: user.correoElectronico,
+        contrasenia: user.contrasenia,
+        tipoUsuario: "campesino",
+        terminosYCondiciones: user.terminosYCondiciones,
+      },
     };
+
+    if (isUpdating) {
+      perfilCampesino.id = data.campesinoId;
+    }
 
     try {
       const response = isUpdating
@@ -92,7 +91,7 @@ export function Perfil() {
       maxWidthOrHeight: 1920,
       useWebWorker: true,
     };
-    
+
     try {
       const imagenComprimida = await imageCompression(file, options);
       return new Promise((resolve, reject) => {
@@ -116,6 +115,7 @@ export function Perfil() {
         disabled
       />
       {errors.nombreUsuario && <span>El nombre de usuario es obligatorio</span>}
+
       <input
         type="email"
         {...register("correoElectronico", { required: true })}
@@ -125,24 +125,28 @@ export function Perfil() {
       {errors.correoElectronico && (
         <span>El correo electrónico es obligatorio</span>
       )}
+
       <input
         type="text"
         {...register("nombre", { required: true })}
         placeholder="Nombre"
       />
       {errors.nombre && <span>El nombre es obligatorio</span>}
+
       <input
         type="text"
         {...register("apellido", { required: true })}
         placeholder="Apellido"
       />
       {errors.apellido && <span>El apellido es obligatorio</span>}
+
       <input
         type="text"
         {...register("direccion", { required: true })}
         placeholder="Dirección"
       />
       {errors.direccion && <span>La dirección es obligatoria</span>}
+
       <input
         type="text"
         {...register("numeroDocumento", { required: true })}
@@ -151,9 +155,12 @@ export function Perfil() {
       {errors.numeroDocumento && (
         <span>El número de documento es obligatorio</span>
       )}
-      <input type="file" {...register("foto", { required: !isUpdating })} />{" "}
+
+      <input type="file" {...register("foto", { required: !isUpdating })} />
       {errors.foto && <span>La foto es obligatoria</span>}
-      <input type="hidden" {...register("id", { required: false })} />
+
+      <input type="hidden" {...register("campesinoId")} />
+
       <button type="submit">
         {isUpdating ? "Actualizar Perfil" : "Guardar Perfil"}
       </button>

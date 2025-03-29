@@ -21,7 +21,7 @@ public class CampesinoController {
 
     @Autowired
     private CampesinoServices campesinoServices;
-    @Autowired 
+    @Autowired
     private ProductoServices productoServices;
 
     @PostMapping("/perfil")
@@ -31,14 +31,16 @@ public class CampesinoController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Correo electrónico y nombre de usuario son obligatorios");
         }
+        System.out.println(campesino.getId());
+        System.out.println("Campesino recibido: " + campesino);
+        System.out.println("Usuario asociado: " + campesino.getUsuario());
         Campesino nuevoCampesino = campesinoServices.save(campesino);
         productoServices.asociarProductosACampesino(nuevoCampesino.getUsuario().getId(), nuevoCampesino.getId());
         return ResponseEntity.ok(nuevoCampesino);
     }
 
     @GetMapping("/perfil/{id}")
-    public ResponseEntity<Campesino> obtenerPerfilCampesino(@PathVariable int id) 
-    {
+    public ResponseEntity<Campesino> obtenerPerfilCampesino(@PathVariable int id) {
         Campesino campesino = campesinoServices.obtenerPerfil(id);
         return ResponseEntity.ok(campesino);
 
