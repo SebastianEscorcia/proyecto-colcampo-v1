@@ -3,11 +3,18 @@ import {
   actualizarCampesino,
   obtenerPerfilCampesino,
 } from "../Logic/CampesinoPerfilController";
+
+import {
+  registrarCliente,
+  actualizarCliente,
+  obtenerPerfilCliente,
+} from "../Logic/ClientePerfilController";
+
 import { useForm } from "react-hook-form";
 import { usarContexto } from "../context/AuthUsuarioContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import imageCompression from 'browser-image-compression';
+import imageCompression from "browser-image-compression";
 
 export function Perfil() {
   const {
@@ -17,7 +24,7 @@ export function Perfil() {
     setValue,
   } = useForm();
 
-  const { user, campesinoPerfil } = usarContexto();
+  const { user, campesinoPerfil,setCampesinoPerfil, setClientePerfil } = usarContexto();
   const navigate = useNavigate();
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -29,20 +36,39 @@ export function Perfil() {
       setValue("tipoUsuario", user.tipoUsuario);
       setValue("terminosYCondiciones", user.terminosYCondiciones);
 
-      obtenerPerfilCampesino(user.id)
-        .then((response) => {
-          if (response && response.id) {
-            setIsUpdating(true);
-            setValue("campesinoId", response.id);
-            setValue("nombre", response.nombre);
-            setValue("apellido", response.apellido);
-            setValue("direccion", response.direccion);
-            setValue("numeroDocumento", response.numeroDocumento);
-          }
-        })
-        .catch((error) => {
-          console.error("Error al obtener el perfil del campesino:", error);
-        });
+      if (user.tipoUsuario === "campesino") {
+        obtenerPerfilCampesino(user.id)
+          .then((response) => {
+            if (response && response.id) {
+              setIsUpdating(true);
+              setValue("campesinoId", response.id);
+              setValue("nombre", response.nombre);
+              setValue("apellido", response.apellido);
+              setValue("direccion", response.direccion);
+              setValue("numeroDocumento", response.numeroDocumento);
+              setCampesinoPerfil(response);
+            }
+          })
+          .catch((error) => {
+            console.error("Error al obtener el perfil del campesino:", error);
+          });
+      } else if (user.tipoUsuario === "cliente") {
+        obtenerPerfilCliente(user.id)
+          .then((response) => {
+            if (response && response.id) {
+              setIsUpdating(true);
+              setValue("clienteId", response.id);
+              setValue("nombre", response.nombre);
+              setValue("apellido", response.apellido);
+              setValue("direccion", response.direccion);
+              setValue("numeroDocumento", response.numeroDocumento);
+              setClientePerfil(response);
+            }
+          })
+          .catch((error) => {
+            console.error("Error al obtener el perfil del cliente:", error);
+          });
+      }
     }
   }, [user, setValue]);
 
@@ -50,10 +76,13 @@ export function Perfil() {
     if (data.foto && data.foto[0]) {
       data.foto = await convertirABase64(data.foto[0]);
     } else {
-      data.foto = campesinoPerfil?.foto || "";
+      data.foto =
+        user.tipoUsuario === "campesino"
+          ? campesinoPerfil?.foto || ""
+          : clientePerfil?.foto || "";
     }
 
-    const perfilCampesino = {
+    const perfilComun = {
       nombre: data.nombre,
       apellido: data.apellido,
       direccion: data.direccion,
@@ -64,24 +93,33 @@ export function Perfil() {
         nombreUsuario: user.nombreUsuario,
         correoElectronico: user.correoElectronico,
         contrasenia: user.contrasenia,
-        tipoUsuario: "campesino",
+        tipoUsuario: user.tipoUsuario,
         terminosYCondiciones: user.terminosYCondiciones,
       },
     };
 
-    if (isUpdating) {
-      perfilCampesino.id = data.campesinoId;
-    }
-
     try {
-      const response = isUpdating
-        ? await actualizarCampesino(perfilCampesino)
-        : await registrarCampesino(perfilCampesino);
+      let response;
 
-      console.log("Campesino registrado/actualizado:", response);
-      navigate("/vender");
+      if (user.tipoUsuario === "campesino") {
+        if (isUpdating) perfilComun.id = data.campesinoId;
+        response = isUpdating
+          ? await actualizarCampesino(perfilComun)
+          : await registrarCampesino(perfilComun);
+        setCampesinoPerfil(response);
+        navigate("/vender");
+      } else {
+        if (isUpdating) perfilComun.id = data.clienteId;
+        response = isUpdating
+          ? await actualizarCliente(perfilComun)
+          : await registrarCliente(perfilComun);
+        setClientePerfil(response);
+        navigate("/comprar");
+      }
+
+      console.log("Perfil registrado/actualizado:", response);
     } catch (error) {
-      console.error("Error al registrar/actualizar campesino:", error);
+      console.error("Error al registrar/actualizar perfil:", error);
     }
   };
 
@@ -160,7 +198,8 @@ export function Perfil() {
       {errors.foto && <span>La foto es obligatoria</span>}
 
       <input type="hidden" {...register("campesinoId")} />
-
+      {/* Campo oculto para cliente */}
+      <input type="hidden" {...register("clienteId")} />
       <button type="submit">
         {isUpdating ? "Actualizar Perfil" : "Guardar Perfil"}
       </button>

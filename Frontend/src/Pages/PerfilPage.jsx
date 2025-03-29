@@ -3,16 +3,28 @@ import { usarContexto } from "../context/AuthUsuarioContext";
 import "../Styles/PerfilPage.css";
 
 function PerfilPage() {
-  const { user, campesinoPerfil } = usarContexto();
+  const { user, campesinoPerfil, clientePerfil } = usarContexto();
   return (
     <div className="perfil-page-container">
       <div className="perfil-header">
         <img
-          src={campesinoPerfil?.foto || "default-profile.png"}
+          src={
+            user?.tipoUsuario === "campesino"
+              ? campesinoPerfil?.foto
+              : clientePerfil?.foto || "default-profile.png"
+          }
           alt="Foto de perfil"
           className="perfil-foto"
         />
-        <h1 className="perfil-username">{user?.nombreUsuario}</h1>
+        <h1 className="perfil-username">
+          {user?.tipoUsuario === "campesino"
+            ? campesinoPerfil?.nombre
+              ? `${campesinoPerfil.nombre} ${campesinoPerfil.apellido}`
+              : user?.nombreUsuario
+            : clientePerfil?.nombre
+            ? `${clientePerfil.nombre} ${clientePerfil.apellido}`
+            : user?.nombreUsuario}
+        </h1>
       </div>
       <div className="perfil-navigation">
         <Link to="/perfil/datos" className="perfil-link">
