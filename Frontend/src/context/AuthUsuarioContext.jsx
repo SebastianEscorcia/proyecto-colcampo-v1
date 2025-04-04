@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', response.token);
       setUser(response.usuario);
       setisAuthenticated(true);
-
+      
       if (response.usuario.tipoUsuario === 'campesino') {
         const perfil = await obtenerPerfilCampesino(response.usuario.id);
         setCampesinoPerfil(perfil);

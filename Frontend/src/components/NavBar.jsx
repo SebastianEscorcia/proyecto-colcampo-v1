@@ -6,14 +6,11 @@ import Logo from "../assets/Logo.jpeg";
 import { usarContexto } from "../context/AuthUsuarioContext";
 import { ShoppingBasket, Search } from "lucide-react";
 
-
 function Navbar() {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
-  const { isAuthenticated, logout } = usarContexto();
-  
-  
+  const { isAuthenticated, logout, user } = usarContexto();
 
   const handleLogoClick = () => {
     NProgress.start();
@@ -64,7 +61,7 @@ function Navbar() {
           </Link>
           <Link
             to="/carrito"
-            className="relative p-2  text-black cursor-pointer transform hover:scale-105 hover:shadow-lg hover:text-white hover:bg-green-600"
+            className="relative p-2 text-black cursor-pointer transform hover:scale-105 hover:shadow-lg hover:text-white hover:bg-green-600"
             onClick={handleLinkClick}
           >
             <ShoppingBasket className="h-6 w-6" />
@@ -72,16 +69,17 @@ function Navbar() {
               0
             </span>
           </Link>
-          {isAuthenticated   ? (
+          {isAuthenticated ? (
             <>
-              
-              <Link
-                to="/vender"
-                className="navbar-link"
-                onClick={handleLinkClick}
-              >
-                ¿Vender Productos?
-              </Link>
+              {user.tipoUsuario === 'campesino' && (
+                <Link
+                  to="/vender"
+                  className="navbar-link"
+                  onClick={handleLinkClick}
+                >
+                  ¿Vender Productos?
+                </Link>
+              )}
               <button onClick={logout} className="navbar-link">
                 Cerrar sesión
               </button>
@@ -92,11 +90,9 @@ function Navbar() {
               >
                 Perfil
               </Link>
-              
             </>
           ) : (
             <>
-              
               <Link
                 to="/registro"
                 className="navbar-link"

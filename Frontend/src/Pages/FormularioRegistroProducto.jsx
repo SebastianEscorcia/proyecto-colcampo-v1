@@ -77,7 +77,17 @@ function FormularioRegistroProducto() {
         <label>Nombre de tu producto:</label>
         <input
           type="text"
-          {...register("nombre", { required: "El nombre es obligatorio" })}
+          {...register("nombre", {
+            required: "El nombre es obligatorio",
+            minLength: {
+              value: 3,
+              message: "Debe tener al menos 3 caracteres",
+            },
+            maxLength: {
+              value: 10,
+              message: "Debe tener máximo 10 caracteres",
+            },
+          })}
           className="form-input"
         />
         {errors.nombre && <p className="form-error">{errors.nombre.message}</p>}
@@ -88,6 +98,9 @@ function FormularioRegistroProducto() {
           type="text"
           {...register("Descripcion", {
             required: "La descripción es obligatoria",
+            required: "La descripción es obligatoria",
+            minLength: { value: 3, message: "Mínimo 3 caracteres" },
+            maxLength: { value: 30, message: "Máximo 30 caracteres" },
           })}
           className="form-input"
         />
@@ -99,7 +112,12 @@ function FormularioRegistroProducto() {
         <label>Precio:</label>
         <input
           type="number"
-          {...register("Precio", { required: "El precio es obligatorio" })}
+          {...register("Precio", {
+            required: "El precio es obligatorio",
+            required: "El precio es obligatorio",
+            min: { value: 100, message: "El precio mínimo es 100" },
+            max: { value: 999999, message: "El precio máximo es 999999" },
+          })}
           className="form-input"
         />
         {errors.Precio && <p className="form-error">{errors.Precio.message}</p>}
@@ -128,7 +146,11 @@ function FormularioRegistroProducto() {
         <label>Cantidad en tu almacén:</label>
         <input
           type="number"
-          {...register("cantidad", { required: "La cantidad es obligatoria" })}
+          {...register("cantidad", {
+            required: "La cantidad es obligatoria",
+            min: { value: 1, message: "Cantidad mínima es 1" },
+            max: { value: 99999, message: "Cantidad máxima es 99999" },
+          })}
           className="form-input"
         />
         {errors.cantidad && (
@@ -141,6 +163,19 @@ function FormularioRegistroProducto() {
           type="text"
           {...register("CodigoProducto", {
             required: "El código del producto es obligatorio",
+            minLength: {
+              value: 5,
+              message: "El código debe tener al menos 5 caracteres",
+            },
+            maxLength: {
+              value: 20,
+              message: "El código debe tener máximo 20 caracteres",
+            },
+            pattern: {
+              value: /^[A-Za-z0-9]+$/,
+              message:
+                "Solo se permiten letras y números, sin espacios ni símbolos",
+            },
           })}
           className="form-input"
         />
@@ -156,6 +191,8 @@ function FormularioRegistroProducto() {
           id="Categoria"
           {...register("Categoria", {
             required: "Selecciona una categoría ",
+            minLength: { value: 6, message: "Mínimo 6 caracteres" },
+            maxLength: { value: 13, message: "Máximo 13 caracteres" },
           })}
         >
           <option value="">Selecciona...</option>

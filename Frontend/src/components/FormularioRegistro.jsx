@@ -48,12 +48,18 @@ function FormularioRegistro() {
         <FaUser />
         <input
           type="text"
-          {...register("nombreUsuario", { required: true })}
+          {...register("nombreUsuario", {
+            required: true,
+            minLength: {
+              value: 10,
+              message: "Debe tener mínimo 10 caracteres",
+            },
+          })}
           placeholder="Nombre de usuario"
         />
       </div>
       {errors.nombreUsuario && <span>El nombre de usuario es obligatorio</span>}
-      
+
       <div className="form-row">
         <div className="input-group">
           <FaUserTag />
@@ -71,12 +77,22 @@ function FormularioRegistro() {
         </div>
         {errors.tipoUsuario && <span>{errors.tipoUsuario.message}</span>}
       </div>
-      
+
       <div className="input-group">
         <FaEnvelope />
         <input
           type="email"
-          {...register("correoElectronico", { required: true })}
+          {...register("correoElectronico", {
+            required: true,
+            maxLength: {
+              value: 255,
+              message: "Debe tener máximo 255 caracteres",
+            },
+            pattern: {
+              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              message: "Formato de correo no válido",
+            },
+          })}
           placeholder="Correo Electrónico"
         />
       </div>
@@ -135,7 +151,9 @@ function FormularioRegistro() {
         <span>{errors.terminosYCondiciones.message}</span>
       )}
 
-      <button className="registrar" type="submit">Regístrate</button>
+      <button className="registrar" type="submit">
+        Regístrate
+      </button>
     </form>
   );
 }

@@ -24,7 +24,7 @@ export function Perfil() {
     setValue,
   } = useForm();
 
-  const { user, campesinoPerfil,setCampesinoPerfil, setClientePerfil } = usarContexto();
+  const { user, campesinoPerfil,setCampesinoPerfil, setClientePerfil, clientePerfil } = usarContexto();
   const navigate = useNavigate();
   const [isUpdating, setIsUpdating] = useState(false);
 
