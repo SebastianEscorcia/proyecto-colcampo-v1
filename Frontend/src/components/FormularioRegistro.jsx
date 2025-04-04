@@ -58,7 +58,7 @@ function FormularioRegistro() {
           placeholder="Nombre de usuario"
         />
       </div>
-      {errors.nombreUsuario && <span>El nombre de usuario es obligatorio</span>}
+      {errors.nombreUsuario && <span>El nombre de usuario es obligatorio</span> && <p className="form-error">{errors.nombreUsuario.message}</p>}
 
       <div className="form-row">
         <div className="input-group">
@@ -98,7 +98,9 @@ function FormularioRegistro() {
       </div>
       {errors.correoElectronico && (
         <span>El correo electrónico es obligatorio</span>
-      )}
+      )
+       && <p className="form-error">{errors.correoElectronico.message}</p>
+      }
 
       <div className="input-group">
         <FaLock />
