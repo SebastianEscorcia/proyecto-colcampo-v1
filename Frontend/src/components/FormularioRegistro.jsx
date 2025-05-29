@@ -14,7 +14,7 @@ function FormularioRegistro() {
   } = useForm();
   const password = watch("contrasenia");
   const navigate = useNavigate();
-  const { login, isAuthenticated } = usarContexto();
+  const { registerUser, isAuthenticated } = usarContexto();
   const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ function FormularioRegistro() {
 
   const onSubmit = async (values) => {
     try {
-      await login(values);
+      await registerUser(values);
       setErrorMessage(null);
     } catch (error) {
       if (error.response && error.response.status === 409) {

@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
   const [campesinoPerfil, setCampesinoPerfil] = useState(null);
   const [clientePerfil, setClientePerfil] = useState(null); // 👈 nuevo estado
 
-  const login = async (user) => {
+  const registerUser = async (user) => {
     try {
       const response = await registrarUsuario(user);
       localStorage.setItem('token', response.token);
@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }) => {
       obtenerPerfil().then(async user => {
         setUser(user);
         setisAuthenticated(true);
-
+        
         if (user.tipoUsuario === 'campesino') {
           const perfil = await obtenerPerfilCampesino(user.id);
           setCampesinoPerfil(perfil);
@@ -71,7 +71,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthUsuarioContext.Provider value={{
-      login,
+      registerUser,
       user,
       isAuthenticated,
       logout,

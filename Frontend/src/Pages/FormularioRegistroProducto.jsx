@@ -98,7 +98,6 @@ function FormularioRegistroProducto() {
           type="text"
           {...register("Descripcion", {
             required: "La descripción es obligatoria",
-            required: "La descripción es obligatoria",
             minLength: { value: 3, message: "Mínimo 3 caracteres" },
             maxLength: { value: 30, message: "Máximo 30 caracteres" },
           })}
