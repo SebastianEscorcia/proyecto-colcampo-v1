@@ -30,10 +30,11 @@ function FormularioRegistro() {
     } catch (error) {
       if (error.response && error.response.status === 409) {
         setErrorMessage(
-          "El nombre de usuario o correo electrónico ya están en uso."
+          "El nombre de usuario o correo electrónico ya están en uso ingrese otro por favor."
         );
+        
       } else {
-        setErrorMessage("Ocurrió un error inesperado. Inténtalo nuevamente.");
+        setErrorMessage(error.message);
       }
     }
   };

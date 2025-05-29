@@ -51,7 +51,14 @@ export const ProductoProvider = ({ children }) => {
       }
     } catch (error) {
       console.error("Error registrando producto:", error);
-      return { success: false, message: "Ocurrió un error inesperado." };
+      if (error.response && error.response.status === 409) {
+        return {
+          success: false,
+          message: "El producto ya existe, por favor ingrese otro.",
+        };
+      }
+      throw error;
+      
     }
   };
 
